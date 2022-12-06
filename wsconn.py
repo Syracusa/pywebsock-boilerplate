@@ -29,8 +29,11 @@ class WsConn:
 # ======================================================
 #                  CALLBACK Dict
 # ======================================================
-
-    callbacks = {}
+    def process_hello(self, ws, msg):
+        cdebug(msg)
+        print('Recvd Hello!')
+        
+    callbacks = {'hello' : process_hello}
 
 # ======================================================
 #                   CALLBACK Connector
@@ -76,7 +79,7 @@ class WsConn:
                 #     cdebug(f'Recv from client : {msg}')
                     
                 if msg['request_type'] in self.callbacks:
-                    await self.callbacks[msg['request_type']](self, websocket, msg)
+                    self.callbacks[msg['request_type']](self, websocket, msg)
                 else:
                     cdebug(f"No request_type named : {msg['request_type']}")
         except websockets.ConnectionClosed as e:
